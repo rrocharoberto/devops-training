@@ -1,4 +1,4 @@
-#This file needs to be fixed in orde to run the Angular app.
+#This file needs to be fixed in order to run the Angular app.
 #see: https://mherman.org/blog/dockerizing-an-angular-app/
 
 # base image
@@ -17,19 +17,16 @@ RUN apt-get update && apt-get install -yq google-chrome-stable
 WORKDIR /app
 
 # add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
+ENV PATH /app/student-frontend/node_modules/.bin:$PATH
 
-# install and cache app dependencies
-#COPY package.json /app/package.json
+# clone the github repository
 RUN git clone https://github.com/rrocharoberto/devops-training.git
 
-WORKDIR /app/student-frontend
+WORKDIR /app/devops-training/student-frontend
 RUN npm install
 RUN npm install -g @angular/cli
 
-# add app
-#COPY . /app
-
 # start app
-CMD ng serve --host 0.0.0.0
+CMD ng serve --proxy-config proxy.config-docker.js --host 0.0.0.0
+
 

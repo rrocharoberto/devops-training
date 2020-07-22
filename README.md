@@ -19,7 +19,63 @@ Go to student-backend directory and run:
 Go to student-frontend directory and run:
 `ng serve --proxy-config proxy.config.js`
 
+## Creating the images:
+
+# Build the BackEnd project:
+
+`cd student-backend`
+`mvn clean install`
+
+# Build the API-Test project:
+`cd student-api-test`
+`mvn clean install -Dmaven.test.skip=true`
+
+# Create the database image:
+
+Go to `docker/postgres` directory:
+
+Create the image:
+`docker image build -t db-student .`
+
+
+# Create the backend image:
+
+Go to `docker/backend` directory.
+
+Copy the jar file of the Spring Boot backend application:
+`cp ../../student-backend/target/student-backend-1.0.jar .`
+
+Create the image:
+`docker image build -t backend-student .`
+
+
+# Create the frontend image:
+
+Go to `docker/frontend` directory.
+
+Create the image:
+`docker image build -t frontend-student .`
+
+
+## Running the containers
+
+Create a docker network:
+docker network create student-net
+
+# Run the database container:
+docker container run --network student-net --name studentdb-server --rm -d db-student
+
+Optional: check the container logs:
+docker container logs -f studentdb-server
+
+# Run the backend container:
+docker container run -p 8080:8080 --network student-net --name studentback-server --rm -d backend-student
+
+Optional: check the container logs:
+docker container logs -f studentback-server
+
 ## Other way of running the entire app, using docker.
 Go to docker directory and run:
 `docker-compose up`
+
 
