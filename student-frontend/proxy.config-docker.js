@@ -1,7 +1,7 @@
 const proxy = [
     {
       context: '/api',
-      target: 'http://backend_server:8080/student-backend/',
+      target: 'http://studentback-server:8080/student-backend/',
       pathRewrite: {'^/api' : ''}
     }
   ];
