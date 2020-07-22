@@ -19,7 +19,7 @@ Go to student-backend directory and run:
 Go to student-frontend directory and run:
 `ng serve --proxy-config proxy.config.js`
 
-## Other way of running the hole app, using docker.
+## Other way of running the entire app, using docker.
 Go to docker directory and run:
 `docker-compose up`
 
