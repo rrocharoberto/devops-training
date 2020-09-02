@@ -8,6 +8,7 @@ LABEL data="01/09/2020"
 RUN mkdir -p /usr/local/tomcat/conf
 RUN mv /usr/local/tomcat/webapps /usr/local/tomcat/webapps2
 RUN mv /usr/local/tomcat/webapps.dist /usr/local/tomcat/webapps
+RUN echo "spring.profiles.active=docker" >> /usr/local/tomcat/conf/catalina.properties
 
 # Copy configurations (Tomcat users, Manager app)
 COPY tomcat-users.xml /usr/local/tomcat/conf/
