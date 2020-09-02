@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.2.6.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.edu.rocha</groupId>
 	<artifactId>student-backend</artifactId>
 	<version>1.0</version>
 	<name>student-backend</name>
+	<packaging>${project.packaging}</packaging>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
@@ -36,7 +38,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		<!-- add support for automatic reloading -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -67,4 +69,45 @@
 			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<project.packaging>jar</project.packaging>
+			</properties>
+		</profile>
+		<profile>
+			<id>release</id>
+			<properties>
+				<project.packaging>war</project.packaging>
+			</properties>
+			<activation>
+				<property>
+					<name>environment</name>
+					<value>release</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-web</artifactId>
+					<exclusions>
+						<exclusion>
+							<artifactId>spring-boot-starter-tomcat</artifactId>
+							<groupId>org.springframework.boot</groupId>
+						</exclusion>
+					</exclusions>
+				</dependency>
+				<dependency>
+					<groupId>javax.servlet</groupId>
+					<artifactId>javax.servlet-api</artifactId>
+					<version>3.1.0</version>
+					<scope>provided</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 </project>
