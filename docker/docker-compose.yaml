@@ -2,21 +2,9 @@ version: "3"
 
 services:
 
-   app_server:
-      image: student-backend
-      networks:
-         - my-net
-      ports:
-         - 8080:8080
-      depends_on: 
-         - db_server
+  tomcat_server:
+    image: tomcat:9.0.37-jdk8-openjdk-slim-buster
+    ports:
+      - 8080:8080
 
-   db_server:
-      image: db_server
-      networks:
-         - my-net
-      environment:
-         - DB_ENVIRONMENT_VARIABLE=any_value
 
-networks:
-   my-net:

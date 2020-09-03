@@ -1,0 +1,34 @@
+version: "3"
+
+services:
+
+  student-frontend:
+    image: frontend-student
+    networks:
+      - student-net
+    ports:
+      - 4201:4200
+    depends_on: 
+      - student-backend
+
+  student-backend:
+    image: backend-student
+    networks:
+      - student-net
+    ports:
+      - 8081:8080
+    depends_on: 
+      - studentdb-server
+
+  student-dbserver:
+    image: db-student
+    networks:
+      - student-net
+    ports:
+      - 5433:5432
+    environment:
+      - DB_ENVIRONMENT_VARIABLE=any_value
+
+networks:
+  student-net:
+
