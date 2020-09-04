@@ -135,3 +135,47 @@ Go to `student-frontend` directory and run:
 Go to `student-api-test` and run the unit test class `APITest`.
 
 
+
+#Run the CI process using Jenkins
+
+##Pre-requisites
+The following tools are required:
+1) Jenkins
+2) Docker
+3) Tomcat
+
+All jobs use the same Git repository in Source Code Management:
+`https://github.com/rrocharoberto/devops-training.git`
+
+* It means: this git project
+
+##Frontend configuration
+
+In the build process, execute the following commands in shell config:
+
+```
+cd student-frontend
+npm install
+npm run build
+docker image build -t frontend-student .
+docker stop student-frontend || true
+docker rm student-frontend || true
+docker container run -p 81:80 --network student-net --name student-frontend --rm -d frontend-student
+```
+
+##Backend configuration
+In the build process, configure the following Maven options:
+
+goals: clean package
+
+POM: student-backend/pom.xml
+
+Properties: environment=release
+
+In post-build actions, configure the deploy in local Tomcat instance, with the following options:
+
+WAR/EAR files: student-backend/target/student-backend-1.0.war
+Context path: student-backend
+Containers: Tomcat 9.x Remote (with the specific credentials (eg: admin/admin) and Tomcat URL (http://localhost:8080).
+
+
