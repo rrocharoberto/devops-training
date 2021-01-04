@@ -9,8 +9,8 @@ import { StudentService } from '../student.service';
 })
 export class CreateStudentComponent implements OnInit {
   availableCategories = [
-    { display: 'Regular', value: 'Regular' },
-    { display: 'Special', value: 'special' }
+    { display: 'Regular', value: '1' },
+    { display: 'Special', value: '2' }
   ]
   studService: StudentService;
   defaultName = '';

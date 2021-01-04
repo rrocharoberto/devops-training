@@ -6,7 +6,7 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class StudentService {
 
-  URL_BASE = "http://localhost:4200/api/";
+  URL_BASE = "/api/";
   
   private students = [];
   studentsChanged = new Subject<void>();

@@ -4,8 +4,12 @@ services:
 
   student-frontend:
     image: frontend-student
+    container_name: student-frontend
+    build: 
+      context: ./frontend
     networks:
-      - student-net
+      - student-frontend-net
+      - student-backend-net
     ports:
       - 4201:4200
     depends_on: 
@@ -13,22 +17,28 @@ services:
 
   student-backend:
     image: backend-student
+    container_name: student-backend
+    build: 
+      context: ./backend
     networks:
-      - student-net
+      - student-backend-net
     ports:
       - 8081:8080
     depends_on: 
-      - studentdb-server
+      - student-db
 
-  student-dbserver:
+  student-db:
     image: db-student
+    container_name: student-db
+    build: 
+      context: ./postgres
     networks:
-      - student-net
+      - student-backend-net
     ports:
       - 5433:5432
     environment:
       - DB_ENVIRONMENT_VARIABLE=any_value
 
 networks:
-  student-net:
-
+  student-backend-net:
+  student-frontend-net:

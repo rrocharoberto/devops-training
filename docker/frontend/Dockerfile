@@ -1,5 +1,4 @@
-# base image
-FROM nginx:1.15.5-alpine
+FROM nginx
 
 LABEL author="Roberto Rocha"
 LABEL email="rrocha.roberto@gmail.com"
@@ -12,6 +11,6 @@ COPY nginx/default.conf /etc/nginx/conf.d/
 RUN rm -rf /usr/share/nginx/html/*
 
 ## From ‘builder’ stage copy over the artifacts in dist folder to default nginx public folder
-COPY ../../student-frontend/build/ /usr/share/nginx/html
+COPY ./dist/student-frontend/ /usr/share/nginx/html
 
 CMD ["nginx", "-g", "daemon off;"]
