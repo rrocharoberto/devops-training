@@ -44,10 +44,11 @@ public class APITest {
 		
 		//Uma estratégia que eu percebi é rodar o banco em um container sem "volumes"
 		RestAssured.given()
-				.body("{" + 
-						"    \"register\": 111," + 
-						"    \"name\": \"Student 111\"" + 
-						"}")
+				.body("""{ 
+						    "register": 111,
+						    "name": "Student 111",
+						    "category": 1 
+						}""")
 				.contentType(ContentType.JSON)
 			.when()
 				.post("/students")

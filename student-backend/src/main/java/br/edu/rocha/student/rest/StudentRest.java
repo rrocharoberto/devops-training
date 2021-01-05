@@ -20,7 +20,7 @@ public class StudentRest {
 	@GetMapping("/fixedStudent")
 	public Student getFixedStudent() {
 		System.out.println("Inside getFixedStudent().");
-		return new Student(1, "Student fixed 1");
+		return new Student(1, "Student fixed 1", 2);
 	}
 	
 	@GetMapping("/allStudents")

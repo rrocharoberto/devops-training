@@ -17,18 +17,21 @@ public class Student implements Serializable {
 
 	private String name;
 
+	private Integer category;
+
 	public Student() {
 	}
 
-	public Student(Integer registry, String name) {
+	public Student(Integer registry, String name, Integer category) {
 		super();
 		this.registry = registry;
 		this.name = name;
+		this.category = category;
 	}
 
 	@Override
 	public String toString() {
-		return "Student [registry=" + registry + ", name=" + name + "]";
+		return "Student [registry=" + registry + ", name=" + name+ ", category=" + category + "]";
 	}
 
 	public Integer getRegistry() {
@@ -47,4 +50,11 @@ public class Student implements Serializable {
 		this.name = name;
 	}
 
+	public Integer getCategory() {
+		return category;
+	}
+
+	public void setCategory(Integer category) {
+		this.category = category;
+	}
 }

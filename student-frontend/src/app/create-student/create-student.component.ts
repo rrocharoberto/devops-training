@@ -8,11 +8,13 @@ import { StudentService } from '../student.service';
   styleUrls: ['./create-student.component.css']
 })
 export class CreateStudentComponent implements OnInit {
+  studService: StudentService;
+
   availableCategories = [
     { display: 'Regular', value: '1' },
     { display: 'Special', value: '2' }
-  ]
-  studService: StudentService;
+  ];
+  selected: number = 1;
   defaultName = '';
   defaultRegristry = '';
 
