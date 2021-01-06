@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+    stages {
+        stage ('Início do backend') {
+            steps {
+                sh 'sleep 1' 
+                sh 'echo início'
+            }
+        }
+        stage ('Meio do backend') {
+            steps {
+                sh 'echo meio 1'
+                sh 'sleep 1' 
+                sh 'echo meio 2'
+                sh 'sleep 1' 
+                sh 'echo meio 3'
+            }
+        }
+        stage ('Fim do backend') {
+            steps {
+                sh 'sleep 3' 
+                sh 'echo fim'
+            }
+        }
+    }
+}
