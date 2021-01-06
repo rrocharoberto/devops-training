@@ -49,7 +49,7 @@ export class StudentService {
     return this.http.post(this.URL_BASE + 'students', newStudent, options)
     .subscribe(
       (data) => {
-        console.log(data);
+        console.log("sendStudent to backend: " + data);
         this.students.push(newStudent);
         this.studentsChanged.next();
       }

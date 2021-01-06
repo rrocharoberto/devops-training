@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>br.edu.rocha</groupId>
-	<artifactId>student-api-test</artifactId>
+	<artifactId>student-functional-test</artifactId>
 	<version>1.0</version>
 	<packaging>jar</packaging>
 
-	<name>student-api-test</name>
+	<name>student-functional-test</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
@@ -19,10 +19,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>io.rest-assured</groupId>
-			<artifactId>rest-assured</artifactId>
-			<version>4.3.0</version>
-			<scope>test</scope>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>3.141.59</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -49,4 +48,5 @@
 			</plugin>
 		</plugins>
 	</build>
+
 </project>

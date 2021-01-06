@@ -19,15 +19,15 @@ This environment will be used in a CI project using Jenkins for automation of th
 
 `cd student-backend`
 
-`mvn clean install`
+`mvn -Denvironment=release clean install`
 
-### 1.2. Build the API-Test project:
+### 1.2. Build the API-Test project (for docker environment will generate war file):
 `cd student-api-test`
 
 `mvn clean install -Dmaven.test.skip=true`
 
-TODO: check empty Jar file.
-
+PS. 1: will generate empty Jar file.
+PS. 2: skip the tests because the backend is not running yet.
 
 ### 1.3 Build the FrontEnd project:
 
@@ -36,6 +36,16 @@ TODO: check empty Jar file.
 `npm install`
 
 `npm run build`
+
+
+### 1.4. Build the Functional-Test project:
+`cd student-functional-test`
+
+`mvn clean install -Dmaven.test.skip=true`
+
+PS. 1: will generate empty Jar file.
+PS. 2: skip the tests because the backend is not running yet.
+
 
 
 ## 2. Creating the docker images:
@@ -147,17 +157,12 @@ Execute the database script contents of file `docker/postgres/script.sql` in Pos
 Configure the database properties in the file `src/resources/application.properties` inside the project `student-backend`.
 
 ## 3. Build and run the backend project: 
+### For development environment ( for dev environment will generate Spring Boot jar file):
 Go to `student-backend` directory and run:
 
-### For development environment (will generate Spring Boot jar file):
 `mvn clean install`
 
 `mvn spring-boot:run`
-
-
-### For docker environment (will generate war file):
-`mvn -Denvironment=release clean install`
-
 
 
 ## 4. Run the frontend project: 
@@ -167,19 +172,29 @@ Go to `student-frontend` directory and run:
 
 `ng serve --proxy-config proxy.config.js`
 
-## 5. Run the API test project
+## 5. Run the tests
 
 ### In development console
-Go to `student-api-test` and run the command.
+Go to `student-api-test` directory and run the command.
 
-`mvn verify -Dbase.server.url=http://localhost:8080/student-backen`
+`mvn verify -Dbase.server.url=http://localhost:8080/student-backend`
 
-PS.: the *port* depends on the environment the backend is running (8080 (dev) or 8081 (prod - docker)).
+Go to `student-functional-test` directory and run the command.
+
+`mvn verify -Dbase.server.url=http://localhost:4200/students`
+
+
+PS.: the *port* depends on the environment is running:
+
+- backend: 8080 (dev) or 8081 (prod - docker).
+
+- frontend: 4200 (dev) or 4201 (prod - docker).
 
 
 ### (Optional) In development IDE
-Go to `student-api-test` and run the unit test class `APITest`.
+Go to `student-api-test` directory and run the test class `APIITCase`.
 
+Go to `student-functional-test` and run the test class `FunctionalITCase`.
 
 
 

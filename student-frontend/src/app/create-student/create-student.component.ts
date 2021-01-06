@@ -10,6 +10,9 @@ import { StudentService } from '../student.service';
 export class CreateStudentComponent implements OnInit {
   studService: StudentService;
 
+  showMsg: boolean = false;
+  studentSaved: String;
+
   availableCategories = [
     { display: 'Regular', value: '1' },
     { display: 'Special', value: '2' }
@@ -35,5 +38,7 @@ export class CreateStudentComponent implements OnInit {
       submittedForm.value.name, 
       submittedForm.value.category
     );
+    this.showMsg= true;
+    this.studentSaved = submittedForm.value.registry;
   }
 }
