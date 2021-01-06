@@ -172,7 +172,10 @@ Go to `student-frontend` directory and run:
 ### In development console
 Go to `student-api-test` and run the command.
 
-`mvn clean test`
+`mvn verify -Dbase.server.url=http://localhost:8080/student-backen`
+
+PS.: the *port* depends on the environment the backend is running (8080 (dev) or 8081 (prod - docker)).
+
 
 ### (Optional) In development IDE
 Go to `student-api-test` and run the unit test class `APITest`.
