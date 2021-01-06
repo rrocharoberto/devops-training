@@ -1,16 +1,24 @@
 package br.edu.rocha.api.test;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
-public class APITest {
+public class APIITCase {
 	
 	@BeforeClass
-	public static void setup() {
-		RestAssured.baseURI = "http://localhost:8080/student-backend";
+	public static void setup() throws FileNotFoundException, IOException {
+		
+		String baseURL = System.getProperty("base.server.url");
+        if (baseURL == null) {
+        	baseURL = "http://localhost:8080/student-backend";
+        }
+		RestAssured.baseURI = baseURL;
 	}
 	
 	@Test
