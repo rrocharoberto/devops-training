@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.Select;
 
 public class FunctionalITCase {
@@ -20,11 +21,11 @@ public class FunctionalITCase {
 	@BeforeClass
 	public static void setup() throws FileNotFoundException, IOException {
 		baseURL = System.getProperty("base.server.url");
-        if (baseURL == null) {
-        	baseURL = "http://localhost:4200/students";
-        }
+		if (baseURL == null) {
+			baseURL = "http://localhost:4200/students";
+		}
 	}
-	
+
 	@Test
 	public void saveNewStudent() {
 		WebDriver driver = prepareDriver();
@@ -57,7 +58,11 @@ public class FunctionalITCase {
 	}
 
 	private WebDriver prepareDriver() {
-		WebDriver driver = new ChromeDriver();
+
+		ChromeOptions options = new ChromeOptions();
+		options.addArguments("--headless", "--disable-gpu", "--silent");
+		WebDriver driver = new ChromeDriver(options);
+
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		driver.navigate().to(baseURL);
 		return driver;
