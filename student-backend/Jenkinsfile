@@ -1,25 +1,45 @@
 pipeline {
     agent any
     stages {
-        stage ('Início do backend') {
+        stage ('SCM backend') {
             steps {
-                sh 'sleep 1' 
-                sh 'echo início'
+                git 'https://github.com/rrocharoberto/devops-training.git'
             }
         }
-        stage ('Meio do backend') {
+        stage ('Build backend') {
             steps {
-                sh 'echo meio 1'
-                sh 'sleep 1' 
-                sh 'echo meio 2'
-                sh 'sleep 1' 
-                sh 'echo meio 3'
+                script {
+                    dir('student-backend/') {
+                        sh 'mvn clean package -DskipTests=true' 
+                    }
+                }
             }
         }
-        stage ('Fim do backend') {
+        stage ('Unit test backend') {
             steps {
-                sh 'sleep 3' 
-                sh 'echo fim'
+                script {
+                    dir('student-backend/') {
+                        sh 'mvn test' 
+                    }
+                }
+            }
+        }
+        stage ('Sonar Analysis') {
+            environment {
+                scannerHome = tool 'Sonar_Scanner'
+            }
+            steps {
+                withSonarQubeEnv('Sonar_Local') {
+                    sh "${scannerHome}/bin/sonar-scanner -e  -Dsonar.projectKey=DeployBack -Dsonar.host.url=http://localhost:9000 -Dsonar.login=28b8bc4b5903cb217103e90cddef37e70685df6b -Dsonar.java.binaries=student-backend/target -Dsonar.coverage.exclusions=**/.mvn/**,**/src/test/**,**/model/**,**/Application.java"
+                }
+            }
+        }
+        stage ('Quality Gate') {
+            steps {
+                sleep(12)
+                timeout(time: 1, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
     }
