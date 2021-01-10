@@ -5,11 +5,9 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-
-    "build:prod": "ng build --prod", 
-    "prebuild:prod": "replace '%VERSION%' $VERSION src/environments/environment.prod.ts", 
+    "build:prod": "ng build --prod",
+    "prebuild:prod": "replace '%VERSION%' $VERSION src/environments/environment.prod.ts",
     "postbuild:prod": "replace $VERSION '%VERSION%' src/environments/environment.prod.ts",
-
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
