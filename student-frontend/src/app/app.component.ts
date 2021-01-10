@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 import { StudentService } from './student.service';
 
+import { environment } from '../environments/environment.prod';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -9,6 +11,8 @@ import { StudentService } from './student.service';
 })
 export class AppComponent implements OnInit {
   studService: StudentService;
+
+  public version: string = environment.version;
 
   constructor (studService: StudentService) {
     this.studService = studService;
