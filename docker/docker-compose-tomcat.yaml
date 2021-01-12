@@ -4,6 +4,7 @@ services:
 
   tomcat_server:
     image: tomcat:9.0.37-jdk8-openjdk-slim-buster
+    container_name: tomcat9
     ports:
       - 8080:8080
 

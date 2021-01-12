@@ -3,42 +3,53 @@ version: "3"
 services:
 
   student-frontend:
-    image: frontend-student
-    container_name: student-frontend
+    image: frontend-student:build_${BUILD_NUMBER}
+    container_name: student-frontend-prod
     build: 
       context: ./frontend
     networks:
       - student-frontend-net
       - student-backend-net
     ports:
-      - 4201:4200
+      - 4202:4200
     depends_on: 
       - student-backend
 
   student-backend:
-    image: backend-student
-    container_name: student-backend
+    image: backend-student:build_${BUILD_NUMBER}
+    container_name: student-backend-prod
     build: 
       context: ./backend
     networks:
       - student-backend-net
     ports:
-      - 8081:8080
+      - 8082:8080
     depends_on: 
       - student-db
+    environment:
+      - APP_VERSION=build_${BUILD_NUMBER}
+      - DATABASE_UPDATE=none
 
   student-db:
     image: db-student
-    container_name: student-db
+    container_name: student-db-backend
     build: 
       context: ./postgres
     networks:
       - student-backend-net
-    ports:
-      - 5433:5432
-    environment:
-      - DB_ENVIRONMENT_VARIABLE=any_value
-
+    volumes:
+      - prod_postgresql:/var/lib/postgresql
+      - prod_postgresql_data:/var/lib/postgresql/data
+    #ports:
+    #  - 5434:5432
+#    environment:
+#      - POSTGRES_PASSWORD=xptl
+#      - POSTGRES_DB=aluno
+    
 networks:
   student-backend-net:
   student-frontend-net:
+
+volumes:
+  prod_postgresql:
+  prod_postgresql_data:

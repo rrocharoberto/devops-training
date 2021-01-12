@@ -51,6 +51,7 @@ public class APIITCase {
 		//E daí pode dar erro quando for salvar, pois já existe o registro no banco.
 		
 		//Uma estratégia que eu percebi é rodar o banco em um container sem "volumes"
+		//cada build vai gerar uma imagem nova zerada (inclusive do banco)
 		RestAssured.given()
 				.body("{" + 
 						"    \"registry\": 111," + 
