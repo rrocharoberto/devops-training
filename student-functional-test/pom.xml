@@ -41,7 +41,6 @@
 					<execution>
 						<goals>
 							<goal>integration-test</goal>
-							<goal>verify</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -58,11 +57,18 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-failsafe-plugin</artifactId>
 						<version>3.0.0-M5</version>
-						<configuration>
-							<excludes>
-								<exclude>br/edu/rocha/student/functional/prod/**</exclude>
-							</excludes>
-						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>integration-test</goal>
+								</goals>
+								<configuration>
+									<excludes>
+										<exclude>**/prod/**</exclude>
+									</excludes>
+								</configuration>
+							</execution>
+						</executions>
 					</plugin>
 				</plugins>
 			</build>
@@ -76,11 +82,18 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-failsafe-plugin</artifactId>
 						<version>3.0.0-M5</version>
-						<configuration>
-							<excludes>
-								<exclude>br/edu/rocha/student/functional/test/**</exclude>
-							</excludes>
-						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>verify</goal>
+								</goals>
+								<configuration>
+									<excludes>
+										<exclude>**/test/**</exclude>
+									</excludes>
+								</configuration>
+							</execution>
+						</executions>
 					</plugin>
 				</plugins>
 			</build>

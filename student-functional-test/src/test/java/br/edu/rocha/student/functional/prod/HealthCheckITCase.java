@@ -29,8 +29,8 @@ public class HealthCheckITCase {
 	public void healthCheck() throws MalformedURLException {
 		WebDriver driver = prepareDriver();
 		try {
-			String version = driver.findElement(By.id("version")).getText();
-			Assert.assertTrue(version.startsWith("build"));
+			String version = driver.findElement(By.id("app_version")).getText();
+			Assert.assertTrue(version.startsWith("build_"));
 		} finally {
 			driver.quit();
 		}

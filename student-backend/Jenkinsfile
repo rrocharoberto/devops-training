@@ -93,8 +93,12 @@ pipeline {
         }
         stage('Deploy Prod') {
             steps {
-                bat 'docker-compose build'
-                bat 'docker-compose up -d'
+                script {
+                    dir('docker/') {
+                    sh 'docker-compose -f docker-compose-jenkins.yaml build'
+                    sh 'docker-compose -f docker-compose-jenkins.yaml up -d'
+                    }
+                }
             }
         }
         stage ('Health Check') {
@@ -102,7 +106,7 @@ pipeline {
                 sleep(5)
                 script {
                     dir('student-functional-test/') {
-                        sh 'mvn help:active-profiles verify -P prod -Dbase.server.url=http://localhost:4201/students'
+                        sh 'mvn help:active-profiles verify -P prod -Dbase.server.url=http://localhost:4202/students'
                     }
                 }
             }
