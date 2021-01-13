@@ -1,4 +1,4 @@
-package br.edu.rocha.api.test;
+package br.edu.rocha.student.api.test;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class APIITCase {
 	public void testSaveStudent() {
 		
 
-		//TODO: precisa verificar qual estratégia usar pois o banco pode estar poluído
+		//precisa verificar qual estratégia usar pois o banco pode estar poluído
 		//E daí pode dar erro quando for salvar, pois já existe o registro no banco.
 		
 		//Uma estratégia que eu percebi é rodar o banco em um container sem "volumes"
