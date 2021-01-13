@@ -30,6 +30,7 @@ public class HealthCheckITCase {
 		WebDriver driver = prepareDriver();
 		try {
 			String version = driver.findElement(By.id("app_version")).getText();
+			System.out.println("Version retrieved: " + version);
 			Assert.assertTrue(version.startsWith("build_"));
 		} finally {
 			driver.quit();

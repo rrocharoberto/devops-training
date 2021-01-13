@@ -32,7 +32,7 @@ services:
 
   student-db:
     image: db-student
-    container_name: student-db-backend
+    container_name: student-db-prod
     build: 
       context: ./postgres
     networks:
