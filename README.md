@@ -1,95 +1,207 @@
 # devops-training
 Set of projects used in dev-ops training with Jenkings.
 
-The goal of this repository is to build and run some projects, each one in its own container:
+The goal of this repository is to provide the resources to build and run a basic Student Project, each one in its own container:
 1) Database using PostgreSQL
 2) Backend in Spring Boot
 3) Frontend in Angular
 
-Some extra projects are used for testing
-1) API test in Java unit test.
+Please refer to [Deployment diagram](docs/Deployment\ Environment.png) for more information about the architecture of the project.
+
+Please refer to [Jenkins Pipeline diagram](docs/Jenkins\ Pipeline.png) for more information about the Pipeline of the project.
+
+
+Some extra projects are used for testing:
+1) API test in Java (using RestAssured).
+2) Functional test in Java (using Selenium).
 
 This environment will be used in a CI project using Jenkins for automation of the build proccess.
 
-# Instructions for building the images
 
-## 1. Manually Building the projects:
+# Running the production environment using Docker
 
-### 1.1. Build the BackEnd project:
+## 1 - Build the project
+
+Run the command in the `root` directory:
+
+`mvn clean install`
+
+
+## 2 - Build the docker images and run the containers
+
+Run these commands in the `docker` directory:
+
+`docker-compose -f docker-compose-jenkins.yaml build`
+
+`docker-compose -f docker-compose-jenkins.yaml up -d`
+
+
+
+
+# Configure and run the CI process using Jenkins
+
+## 1 - Pre-requisites
+
+The following tools are required:
+1) Jenkins
+2) Docker
+
+All jobs use the same Git repository in Source Code Management:
+`https://github.com/rrocharoberto/devops-training.git`
+
+* It means: this git project
+
+## 2 - Configuring the Jeninks pipeline
+
+1) Access the Jenkins URL:
+
+Example: `http://localhost:9090/`
+
+2) Create a `New Item`. Fill the item name and choose `Pipeline` project type.
+
+3) In `Advanced Project Options`, select the folowing options:
+
+    3.1) Definition: `Pipeline script from SCM`
+    3.2) SCM: `Git`
+    3.3) Repository URL: `Pipeline script from SCM`
+
+* The default file is already set: `Jenkinsfile`
+
+4) Save the project.
+
+5) In the Pipeline project just created, click in `Build Now` link and wait the end of the process.
+
+6) Access the URLs of the running Student project:
+
+Front: `http://localhost:4201/students`
+
+Back: `http://localhost:8081/student-backend`
+
+
+6) Check the logs of the pipeline executed.
+
+
+
+
+# (Optional) Instructions for building the images
+
+## 1. Manually Building the projects
+
+### 1.1 - Setup database docker image and container
+
+Run the following commands in the root directory:
+
+```
+docker image build -t db-student:build_test ./docker/postgres
+
+docker stop student-db-test
+
+docker network create student-net-test
+
+docker container run -p 5433:5432 --network student-net --name student-db-test --rm -d db-student:build_test
+```
+
+### 1.2 - Setup the Backend
+
+### 1.2.1 - Build the BackEnd project
 
 `cd student-backend`
 
-`mvn -Denvironment=release clean install`
+`mvn clean install`
 
-### 1.2. Build the API-Test project (for docker environment will generate war file):
+PS.: Optional: you can generate war file to deploy in a Tomcat instance:
+
+`mvn -P warFile clean install`
+
+
+### 1.2.2 - Create backend docker image and run the container
+
+Run the following commands in the root directory:
+
+```
+cp ./student-backend/target/student-backend-1.0.jar ./docker/backend/
+
+docker image build -t backend-student:build_test ./docker/backend
+
+docker container stop student-backend-test
+
+docker container run -p 8081:8080 --network student-net --name student-backend-test --rm -d backend-student:build_test
+```
+
+### 1.3 - Build and run the API-Test project
+
 `cd student-api-test`
 
-`mvn clean install -Dmaven.test.skip=true`
+`mvn clean verify -P test -Dbase.server.url=http://localhost:8081/student-backend`
 
-PS. 1: will generate empty Jar file.
-PS. 2: skip the tests because the backend is not running yet.
 
-### 1.3 Build the FrontEnd project:
+### 1.4 - Setup the Frontend
+
+### 1.4.1 - Build the FrontEnd project
 
 `cd student-frontend`
 
-`npm install`
+`VERSION="test" npm run build:prod`
 
-`npm run build`
+### 1.4.2 - Create frontend docker image and run the container
 
+```
+cp -r ./student-frontend/dist/ ./docker/frontend/
 
-### 1.4. Build the Functional-Test project:
+docker image build -t frontend-student:build_test ./docker/frontend/
+
+docker container stop student-frontend-test
+
+docker container run -p 4201:4200 --network student-net --name student-frontend-test --rm -d frontend-student:build_test
+```
+
+### 1.5 - Build and run the Functional-Test project
+
 `cd student-functional-test`
 
-`mvn clean install -Dmaven.test.skip=true`
-
-PS. 1: will generate empty Jar file.
-PS. 2: skip the tests because the backend is not running yet.
+`mvn help:active-profiles verify -P test -Dbase.server.url=http://localhost:4201/students`
 
 
+### 1.6 - Deploy production environment
 
-## 2. Creating the docker images:
+`cd docker`
 
-### 2.1. Create the database image:
+`docker-compose -f docker-compose-jenkins.yaml build`
 
-Go to `docker/postgres` directory:
+`docker-compose -f docker-compose-jenkins.yaml up -d`
 
-Create the image:
+### 1.7 - Run the (very simple) Health Check
 
-`docker image build -t db-student .`
+`cd student-api-test`
 
-### 2.2. Create the backend image:
+`mvn help:active-profiles verify -P prod -Dbase.server.url=http://localhost:8082/student-backend`
 
-Go to `docker/backend` directory.
+` cd student-functional-test/`
 
-Copy the jar file of the Spring Boot backend application:
+`mvn help:active-profiles verify -P prod -Dbase.server.url=http://localhost:4202/students`
 
-`cp ../../student-backend/target/student-backend-1.0.jar .`
 
-Create the image:
+## 2 - Accessing the application
 
-`docker image build -t backend-student .`
+Use the following URLs in your browser, depending on the environment:
 
-### 2.3. Create the frontend image:
+### Test environment
 
-Go to `docker/frontend` directory.
+Front: `http://localhost:4201/students`
 
-Copy the project files of the Angular application:
+Back: `http://localhost:8081/student-backend`
 
-`cp -r ../../student-frontend/dist/ .`
+### Production environment
 
-Create the image:
+Front: `http://localhost:4202/students`
 
-`docker image build -t frontend-student .`
+Back: `http://localhost:8082/student-backend`
 
 
 
+## Specific tasks about running the containers
 
-# Running the containers
-
-## Running the entire environment, using Docker Compose.
-
-### Optional pre-requisites: stop all containers
+### If the containers are already running, stop all containers
 
 `docker stop student-frontend`
 
@@ -97,50 +209,13 @@ Create the image:
 
 `docker stop student-db`
 
-## Run the containers
 
-Go to `docker` directory and run:
+### Optional: check the container logs:
 
-`docker-compose -f docker-compose-jenkins.yaml up`
-
-
-## Accessing the application
-
-Use the following URL in your browser:
-
-`http://localhost:4201/students`
+`docker container logs -f ${CONTAINER_NAME}`
 
 
 
-
-# (optional) Running using Docker Separatedely
-
-Instead of using docker compose, you can run the three containers separatedely.
-
-## Create a docker network:
-
-`docker network create student-net`
-
-## 1. Run the database container:
-`docker container run -p 5433:5432 --network student-net --name student-db --rm -d db-student`
-
-Optional: check the container logs:
-
-`docker container logs -f student-dbserver`
-
-## 2. Run the backend container:
-`docker container run -p 8081:8080 --network student-net --name student-backend --rm -d backend-student`
-
-Optional: check the container logs:
-
-`docker container logs -f student-backend`
-
-## 3. Run the frontend container:
-`docker container run -p 4201:4200 --network student-net --name student-frontend --rm -d frontend-student`
-
-Optional: check the container logs:
-
-`docker container logs -f student-frontend`
 
 
 
@@ -174,27 +249,8 @@ Go to `student-frontend` directory and run:
 
 ## 5. Run the tests
 
-### In development console
-Go to `student-api-test` directory and run the command.
+Execute the test classes in the projects  `student-api-test` and `student-functional-test`.
 
-`mvn verify -Dbase.server.url=http://localhost:8080/student-backend`
-
-Go to `student-functional-test` directory and run the command.
-
-`mvn verify -Dbase.server.url=http://localhost:4200/students`
-
-
-PS.: the *port* depends on the environment is running:
-
-- backend: 8080 (dev) or 8081 (prod - docker).
-
-- frontend: 4200 (dev) or 4201 (prod - docker).
-
-
-### (Optional) In development IDE
-Go to `student-api-test` directory and run the test class `APIITCase`.
-
-Go to `student-functional-test` and run the test class `FunctionalITCase`.
 
 
 
