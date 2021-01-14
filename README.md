@@ -1,14 +1,14 @@
 # devops-training
-Set of projects used in dev-ops training with Jenkings.
+This repository contains artifacts to demonstrate the configuration and running of a dev-ops environment with **Jenkings** and **Docker**.
 
 The goal of this repository is to provide the resources to build and run a basic Student Project, each one in its own container:
 1) Database using PostgreSQL
 2) Backend in Spring Boot
 3) Frontend in Angular
 
-Please refer to [Deployment diagram](docs/Deployment\ Environment.png) for more information about the architecture of the project.
+Please refer to [Deployment diagram](docs/DeploymentEnvironment.png) for more information about the architecture of the project.
 
-Please refer to [Jenkins Pipeline diagram](docs/Jenkins\ Pipeline.png) for more information about the Pipeline of the project.
+Please refer to [Jenkins Pipeline diagram](docs/JenkinsPipeline.png) for more information about the Pipeline of the project.
 
 
 Some extra projects are used for testing:
@@ -18,7 +18,53 @@ Some extra projects are used for testing:
 This environment will be used in a CI project using Jenkins for automation of the build proccess.
 
 
-# Running the production environment using Docker
+
+
+# Configure and run the CI process using Jenkins
+
+## 1 - Pre-requisites
+
+The following tools are required:
+1) Jenkins
+2) Docker
+
+All jobs use only this Git repository in Source Code Management.
+
+## 2 - Configuring the Jeninks pipeline
+
+1) Access your Jenkins URL:
+
+Example: `http://localhost:9090/` (in my case the Jenkins is running in my local machine).
+
+2) Create a `New Item`. Fill the item name and choose `Pipeline` project type.
+
+3) After creating the Jenkins project, in `Advanced Project Options`, select the folowing options:
+
+    3.1) Definition: `Pipeline script from SCM`
+
+    3.2) SCM: `Git`
+
+    3.3) Repository URL: `https://github.com/rrocharoberto/devops-training.git`
+
+    * The default file is already set: `Jenkinsfile`
+
+4) Save the project.
+
+5) In the Pipeline project just created, click in `Build Now` link and wait the end of the process.
+
+6) Access the URLs of the running Student project:
+
+Front: `http://localhost:4201/students`
+
+Back: `http://localhost:8081/student-backend`
+
+
+7) (Optional) Check the logs of the pipeline executed.
+
+
+---
+
+# (Optional 1) Running the production environment using Docker
 
 ## 1 - Build the project
 
@@ -37,53 +83,9 @@ Run these commands in the `docker` directory:
 
 
 
+---
 
-# Configure and run the CI process using Jenkins
-
-## 1 - Pre-requisites
-
-The following tools are required:
-1) Jenkins
-2) Docker
-
-All jobs use the same Git repository in Source Code Management:
-`https://github.com/rrocharoberto/devops-training.git`
-
-* It means: this git project
-
-## 2 - Configuring the Jeninks pipeline
-
-1) Access the Jenkins URL:
-
-Example: `http://localhost:9090/`
-
-2) Create a `New Item`. Fill the item name and choose `Pipeline` project type.
-
-3) In `Advanced Project Options`, select the folowing options:
-
-    3.1) Definition: `Pipeline script from SCM`
-    3.2) SCM: `Git`
-    3.3) Repository URL: `Pipeline script from SCM`
-
-* The default file is already set: `Jenkinsfile`
-
-4) Save the project.
-
-5) In the Pipeline project just created, click in `Build Now` link and wait the end of the process.
-
-6) Access the URLs of the running Student project:
-
-Front: `http://localhost:4201/students`
-
-Back: `http://localhost:8081/student-backend`
-
-
-6) Check the logs of the pipeline executed.
-
-
-
-
-# (Optional) Instructions for building the images
+# (Optional 2) Instructions for building the images
 
 ## 1. Manually Building the projects
 
@@ -216,8 +218,7 @@ Back: `http://localhost:8082/student-backend`
 
 
 
-
-
+---
 
 # Running in the development environment
 
