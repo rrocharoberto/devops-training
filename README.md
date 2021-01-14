@@ -293,9 +293,9 @@ All projects use the following SCM URL:
 
 `https://github.com/rrocharoberto/devops-training.git`
 
-| Project         | Build after     | Maven goal    | Pom.xml | Maven Properties | Execute shell command |
+| Project         | Build after     | Maven goals   | Pom.xml | Maven Properties | Execute shell command |
 | --------------- |:---------------:| -------------:| -------:| ----------------:| ----------------:|
-| Deploy Database |                 |               |         |                  | see below |
+| Deploy Database | none            | none          | none    | none             | see below |
 | Deploy Back     | Deploy Database | clean package | student-backend/pom.xml  | | see below |
 | API Test        | Deploy Back     | verify        | student-api-test/pom.xml | base.server.url=http://localhost:8081/student-backend | none
 | Deploy Front    | API Test        | none          | none                     | | see below
