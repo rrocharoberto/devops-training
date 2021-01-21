@@ -1,4 +1,4 @@
-FROM openjdk:8-alpine
+FROM openjdk:11
 
 LABEL author="Roberto Rocha"
 LABEL email="rrocha.roberto@gmail.com"
