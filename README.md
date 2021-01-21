@@ -18,8 +18,6 @@ Some extra projects are used for testing:
 This environment will be used in a CI project using Jenkins for automation of the build proccess.
 
 
-
-
 # Configure and run the CI process using Jenkins
 
 ## 1 - Pre-requisites
@@ -27,6 +25,8 @@ This environment will be used in a CI project using Jenkins for automation of th
 The following tools are required:
 1) Jenkins
 2) Docker
+3) Maven
+4) Java 11
 
 All jobs use only this Git repository in Source Code Management.
 
@@ -68,295 +68,17 @@ Back: `http://localhost:8082/student-backend`
 7) (Optional) Check the logs of the pipeline executed.
 
 
----
 
-# (Optional 1) Build and run of the **production** environment (without Jenkins)
+# Instructions for different environments
 
-## 1 - Build the project
+Please refer to [this insctuctions](README-jobs.md) about running separated jobs (with **Jenkings** and **Docker**).
 
-Run the command in the root directory:
+Please refer to [this insctuctions](README-prod.md) about Production Environment (with **Docker**).
 
-`mvn clean install`
+Please refer to [this insctuctions](README-test.md) about Test Environment (with **Docker**).
 
+Please refer to [this insctuctions](README-dev.md) about Development Environment.
 
-## 2 - Build the docker images and run the containers
 
-Run these commands in the `docker` directory:
-
-`docker-compose -f docker-compose-jenkins.yaml build`
-
-`docker-compose -f docker-compose-jenkins.yaml up -d`
-
-
-
----
-
-# (Optional 2) Build and run of the **test** environment (without Jenkins)
-
-## 1. Manually Building the projects
-
-### 1.1 - Setup database docker image and container
-
-Run the following commands in the root directory:
-
-```
-docker image build -t db-student:build_test ./docker/postgres
-
-docker stop student-db-test
-
-docker network create student-net-test
-
-docker container run -p 5433:5432 --network student-net --name student-db-test --rm -d db-student:build_test
-```
-
-### 1.2 - Setup the Backend
-
-### 1.2.1 - Build the BackEnd project
-
-`cd student-backend`
-
-`mvn clean install`
-
-PS.: Optional: you can generate war file to deploy in a Tomcat instance:
-
-`mvn -P warFile clean install`
-
-
-### 1.2.2 - Create backend docker image and run the container
-
-Run the following commands in the root directory:
-
-```
-cp ./student-backend/target/student-backend-1.0.jar ./docker/backend/
-
-docker image build -t backend-student:build_test ./docker/backend
-
-docker container stop student-backend-test
-
-docker container run -p 8081:8080 --network student-net --name student-backend-test --rm -d backend-student:build_test
-```
-
-### 1.3 - Build and run the API-Test project
-
-`cd student-api-test`
-
-`mvn clean verify -P test -Dbase.server.url=http://localhost:8081/student-backend`
-
-
-### 1.4 - Setup the Frontend
-
-### 1.4.1 - Build the FrontEnd project
-
-`cd student-frontend`
-
-`VERSION="test" npm run build:prod`
-
-### 1.4.2 - Create frontend docker image and run the container
-
-```
-cp -r ./student-frontend/dist/ ./docker/frontend/
-
-docker image build -t frontend-student:build_test ./docker/frontend/
-
-docker container stop student-frontend-test
-
-docker container run -p 4201:4200 --network student-net --name student-frontend-test --rm -d frontend-student:build_test
-```
-
-### 1.5 - Build and run the Functional-Test project
-
-`cd student-functional-test`
-
-`mvn help:active-profiles verify -P test -Dbase.server.url=http://localhost:4201/students`
-
-
-### 1.6 - Deploy production environment
-
-`cd docker`
-
-`docker-compose -f docker-compose-jenkins.yaml build`
-
-`docker-compose -f docker-compose-jenkins.yaml up -d`
-
-### 1.7 - Run the (very simple) Health Check
-
-`cd student-api-test`
-
-`mvn help:active-profiles verify -P prod -Dbase.server.url=http://localhost:8082/student-backend`
-
-`cd student-functional-test/`
-
-`mvn help:active-profiles verify -P prod -Dbase.server.url=http://localhost:4202/students`
-
-
-## 2 - Accessing the application
-
-Use the following URLs in your browser, depending on the environment:
-
-### Test environment
-
-Front: `http://localhost:4201/students`
-
-Back: `http://localhost:8081/student-backend`
-
-### Production environment
-
-Front: `http://localhost:4202/students`
-
-Back: `http://localhost:8082/student-backend`
-
-
-
-## Specific tasks about running the containers
-
-### If the containers are already running, stop all containers
-
-`docker stop student-frontend`
-
-`docker stop student-backend`
-
-`docker stop student-db`
-
-
-### Optional: check the container logs:
-
-`docker container logs -f ${CONTAINER_NAME}`
-
-
-
----
-
-# Running in the **development** environment
-
-To run the project in developent environment, execute the following commands:
-
-## 1. Configure the database
-
-Execute the database script contents of file `docker/postgres/script.sql` in PostgreSQL.
-
-## 2. Configure the backend database properties
-
-Configure the database properties in the file `src/resources/application.properties` inside the project `student-backend`.
-
-## 3. Build and run the backend project: 
-### For development environment (will generate Spring Boot jar file):
-Go to `student-backend` directory and run:
-
-`mvn clean install`
-
-`mvn spring-boot:run`
-
-
-## 4. Run the frontend project: 
-Go to `student-frontend` directory and run:
-
-`ng build`
-
-`ng serve --proxy-config proxy.config.js`
-
-## 5. Run the tests
-
-Execute the test classes in the projects  `student-api-test` and `student-functional-test`.
-
-### 6. Test environment
-
-Use the following URLs in your browser:
-
-Front: `http://localhost:4200/students`
-
-Back: `http://localhost:8080/student-backend`
-
-
-
-# Run the CI process using Jenkins
-
-## Pre-requisites
-The following tools are required:
-1) Jenkins
-2) Docker
-
-All jobs use the same Git repository in Source Code Management:
-`https://github.com/rrocharoberto/devops-training.git`
-
-* It means: this git project
-
-
-## Creating the jobs
-
-For each project in the table below, it is necessary do create a new Item (job), using the `Free style` type.
-
-For every project, it should be configured the fields SCM and that ones specified in the table. Notice, that some projects has scripts that are defined just below the table.
-
-After creating all projects, the build process can be started executing the `Deploy Database` project. The `Build after` configuration will execute automaticaly all projects that have dependencies of current one.
-
-All projects use the following SCM URL:
-
-`https://github.com/rrocharoberto/devops-training.git`
-
-| Project         | Build after     | Maven goals   | Pom.xml | Maven Properties | Execute shell command |
-| --------------- |:---------------:| -------------:| -------:| ----------------:| ----------------:|
-| Deploy Database | none            | none          | none    | none             | see below |
-| Deploy Back     | Deploy Database | clean package | student-backend/pom.xml  | | see below |
-| API Test        | Deploy Back     | verify        | student-api-test/pom.xml | base.server.url=http://localhost:8081/student-backend | none
-| Deploy Front    | API Test        | none          | none                     | | see below
-| Functional Test | Deploy Front    | verify        | student-functional-test/pom.xml | base.server.url=http://localhost:4201/students | none
-
-
-These are the scripts to use in field `Execute shell command` mentioned in the table above:
-
-### Deploy Database shell script:
-
-```
-docker image build -t db-student:build_test ./docker/postgres
-docker stop student-db-test
-docker network create student-net-test
-docker container run -p 5433:5432 --network student-net --name student-db-test --rm -d db-student:build_test
-```
-
-
-### Deploy Back shell script:
-
-```
-cp ./student-backend/target/student-backend-1.0.jar ./docker/backend/
-docker image build -t backend-student:build_test ./docker/backend
-docker container stop student-backend-test || true
-docker container run -p 8081:8080 --network student-net --name student-backend-test --rm -d backend-student:build_test
-```
-
-### Deploy Front shell script:
-
-```
-cd student-frontend
-npm install
-VERSION="test" npm run build:prod
-cd ..
-cp -r ./student-frontend/dist/ ./docker/frontend/
-docker image build -t frontend-student:build_test ./docker/frontend/
-docker container stop student-frontend-test || true
-docker container run -p 4201:4200 --network student-net --name student-frontend-test --rm -d frontend-student:build_test
-```
-
-### Deploy Functional test shell script:
-
-```
-cd student-api-test
-mvn help:active-profiles verify -P prod -Dbase.server.url=http://localhost:8081/student-backend
-
-cd student-functional-test/
-mvn help:active-profiles verify -P test -Dbase.server.url=http://localhost:4201/students
-mvn help:active-profiles verify -P prod -Dbase.server.url=http://localhost:4201/students
-
-```
-
-<!--
-This configuration is used when the Tomcat is used:
-
-In post-build actions, configure the deploy in local Tomcat instance, with the following options:
-
-```
-WAR/EAR files: student-backend/target/student-backend-1.0.war
-Context path: student-backend
-Containers: Tomcat 9.x Remote (with the specific credentials (eg: admin/admin) and Tomcat URL (http://localhost:8080)
-```
--->
+PS.: Let me know if you have some suggestions, improvements and other thoughts.
 
