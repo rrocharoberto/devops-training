@@ -1,13 +1,13 @@
 # devops-training - Test Instructions
 
-This document show how to configure and execute the dev-ops project in test environment, with **Docker**.
+This document shows how to configure and execute the dev-ops project in **test** environment, with **Docker**.
 
 Please refer to [the README.md](README.md) for the main information about the project.
 
 
 # Build and run of the **test** environment (without Jenkins)
 
-## 1. Manually Building the projects
+## 1 - Manually Building the projects
 
 ### 1.1 - Setup database docker image and container
 
@@ -84,15 +84,7 @@ docker container run -p 4201:4200 --network student-net --name student-frontend-
 `mvn help:active-profiles verify -P test -Dbase.server.url=http://localhost:4201/students`
 
 
-### 1.6 - Deploy production environment
-
-`cd docker`
-
-`docker-compose -f docker-compose-jenkins.yaml build`
-
-`docker-compose -f docker-compose-jenkins.yaml up -d`
-
-### 1.7 - Run the (very simple) Health Check
+### 1.6 - Run the (very simple) Health Check
 
 `cd student-api-test`
 
@@ -105,20 +97,13 @@ docker container run -p 4201:4200 --network student-net --name student-frontend-
 
 ## 2 - Accessing the application
 
-Use the following URLs in your browser, depending on the environment:
+Use the following URLs in your browser to test the applications:
 
 ### Test environment
 
 Front: `http://localhost:4201/students`
 
 Back: `http://localhost:8081/student-backend`
-
-### Production environment
-
-Front: `http://localhost:4202/students`
-
-Back: `http://localhost:8082/student-backend`
-
 
 
 ## Specific tasks about running the containers
